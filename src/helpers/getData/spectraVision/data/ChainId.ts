@@ -1,0 +1,17 @@
+enum ChainId {
+    MAINNET = 1,
+    GOERLI = 5,
+    OPTIMISM = 10,
+    BSC = 56,
+    POLYGON = 137,
+    BASE = 8453,
+    ARBITRUM = 42161,
+    AVALANCHE = 43114,
+    SEPOLIA = 11155111,
+    SONIC = 146,
+    HEMI = 43111,
+    HYPEREVM = 999,
+    KATANA = 747474,
+}
+
+export default ChainId

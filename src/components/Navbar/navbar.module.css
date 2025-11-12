@@ -1,0 +1,409 @@
+.navbar {
+  background-color: white;
+  color: #62748e;
+}
+
+.menuTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--stroke);
+}
+
+.navLogo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10.5px 14px;
+}
+
+.navLogo img {
+  width: 28px;
+  height: 28px;
+}
+
+.navLogoText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.navLogoText span:first-of-type {
+  font-size: 14px;
+  font-weight: 600;
+  color: oklch(0.208 0.042 265.755);
+}
+
+.navLogoText span:last-of-type {
+  font-size: 10.5px;
+  font-weight: 400;
+  color: #45556c;
+}
+
+.mobileMenuToogler {
+  position: fixed;
+  bottom: 10.5px;
+  right: 10.5px;
+  cursor: pointer;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(25% - 12.25px);
+  background-color: rgb(248 250 252);
+  border-radius: 14.5px;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgb(226 232 240);
+  font-size: 14px;
+  height: 42px;
+  color: #314158;
+}
+
+.mobileMenuToogler img {
+  margin-left: 3.5px;
+}
+
+.mobileMenuTooglerOpened {
+  position: fixed;
+  right: 15px;
+  bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #0f172b;
+  width: 40px;
+  height: 40px;
+  z-index: 500000;
+  border-radius: 50%;
+}
+
+.mobileMenuTooglerOpened svg {
+  color: white;
+  width: 17.5px;
+  height: 17.5px;
+}
+
+.submitButtonContainer {
+  padding: 14px 0;
+  border: solid var(--stroke);
+  border-width: 1px 0 1px 0;
+}
+
+.navbarButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  padding: 7px 10.5px;
+  font-size: 12.25px;
+  font-weight: 600;
+  border-radius: 7px;
+}
+
+.submitButton {
+  background-color: black;
+  color: white;
+}
+
+.navbarToogle {
+  position: fixed;
+  right: 10.5px;
+  width: 278px;
+  bottom: 70px;
+  flex-direction: column;
+  flex: 1;
+  z-index: 1001;
+  transition: left 0.2s ease-in-out;
+  background-color: rgb(255 255 255);
+}
+
+.navbarToogleVisibleMobile {
+  display: block !important;
+}
+
+.navbarContent {
+  flex: 1;
+}
+
+.navbarFooter {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  font-size: 10.5px;
+  padding: 10px 15px;
+}
+
+.coins {
+  list-style: none;
+}
+
+.coins a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10.5px 14px;
+  margin-bottom: 3.5px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.coins li:first-of-type {
+  margin-top: 0;
+}
+
+.coinSelected span {
+  background-color: #155dfc !important;
+  color: white;
+}
+
+.coins a:hover {
+  background: #f6fafe;
+}
+
+.coins a span {
+  background-color: #e2e8f0;
+  width: 27px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.footerAdd {
+  width: 100%;
+  border-radius: 15px;
+  padding: 20px 15px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.footerAddSticker {
+  display: flex;
+  align-items: center;
+  justify-self: flex-start;
+  font-size: 10.5px;
+  font-weight: 500;
+  margin-bottom: 11px;
+  font-size: 11px;
+}
+
+.footerAddSticker::before {
+  content: '•';
+  display: block;
+  color: #1447e6;
+  margin-right: 7px;
+  transform: scale(2);
+}
+
+.addProtocol p:first-of-type {
+  font-size: 14px;
+  color: black;
+  font-weight: 600;
+}
+
+.addProtocol p:last-of-type {
+  margin-top: 6px;
+}
+
+.addData {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 14px;
+  margin: 14px 0;
+}
+
+.addData div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background-color: white;
+  width: 100%;
+}
+
+.addData div:last-of-type {
+  text-align: right;
+}
+
+.addData div:first-of-type span:first-child {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.addData div span:first-child {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.openVault {
+  color: white;
+  background-color: #155dfc;
+}
+
+.openVault img {
+  filter: brightness(0) invert(1);
+}
+
+.networkSticker {
+  margin: 10px auto 0;
+  color: #45556c;
+  background-color: #f9f3f4;
+  border-color: #cad5e2;
+}
+
+.mobileFooterAdd {
+  margin: 10.5px;
+  padding: 10.5px;
+  background-image: linear-gradient(to bottom right, rgb(239 246 255), rgb(250 245 255));
+  border: 1px solid rgb(191 219 254);
+  border-radius: 0.75rem;
+}
+
+.mobileFooterAddSticker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10.5px;
+  margin-bottom: 7px;
+}
+
+.mobileFooterAddSticker span:first-of-type {
+  line-height: 1rem;
+  background-color: rgb(219 234 254);
+  color: rgb(29 78 216);
+  border: 1px solid rgb(147 197 253);
+  border-radius: 3.5px;
+  padding: 0.25rem 0.5rem;
+}
+
+.mobileFooterAddSticker a {
+  background-color: rgb(37 99 235);
+  color: rgb(255 255 255);
+  line-height: 1.33;
+  padding: 3.5px 10.5px;
+  border-radius: 10.5px;
+}
+
+.mobileFooterAddProductInfo p:first-of-type {
+  font-weight: 600;
+  color: rgb(15 23 42);
+  font-size: 12.25px;
+}
+
+.mobileFooterAddProductInfo p:last-of-type {
+  color: rgb(71 85 105);
+  font-size: 10.5px;
+}
+
+.internalLinks {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.internalLink {
+  font-size: 8px;
+  margin-top: -15px;
+}
+
+@media (max-width: 1030px) {
+  .menuTopVisibleMobile {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 1000;
+    background-color: white;
+  }
+  .navbarFooter {
+    margin-bottom: 60px;
+  }
+  .navbarContent {
+    display: none;
+    flex: 1;
+    border-radius: 0.75rem;
+    border: 1px solid rgb(226 232 240);
+    box-shadow:
+      0 10px 15px -3px rgb(0 0 0 / 0.1),
+      0 4px 6px -2px rgb(0 0 0 / 0.05);
+  }
+  .coins {
+    border-top: 1px solid #f9f3f4;
+    padding: 7px 0;
+  }
+  .coins a {
+    padding: 7px 10.5px;
+    border-radius: 0;
+    font-weight: 600;
+    color: #314158;
+  }
+  .coinSelected {
+    border: none;
+    background: #eff6ff !important;
+    color: #1447e6 !important;
+  }
+  .coins img {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+@media (min-width: 1031px) {
+  .navbar {
+    position: fixed;
+    left: 0;
+    width: 223px;
+    top: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    font-size: 20px;
+    border-right: 1px solid var(--stroke);
+  }
+  .navbarContent {
+    display: block;
+  }
+  .mobileMenuToogler {
+    display: none;
+  }
+  .coinSelected {
+    background: #eff6ff !important;
+    border: 1px solid #bedbff !important;
+    color: #1447e6;
+  }
+  .navbarToogle {
+    display: flex;
+    position: relative;
+    left: unset;
+    right: unset;
+    top: unset;
+    bottom: unset;
+    width: auto;
+    height: auto;
+    flex: 1;
+    border: none;
+    padding: 0;
+    background-color: white;
+    border-radius: 0;
+    box-shadow: none;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  .navLogo {
+    padding: 21px;
+  }
+  .navLogo img {
+    width: 35px;
+    height: 35px;
+  }
+  .coins {
+    padding: 14px;
+  }
+}

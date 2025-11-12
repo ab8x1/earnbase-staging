@@ -1,0 +1,217 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Earnbase Vaults API",
+    "version": "1.0.0",
+    "description": "Compare DeFi yields across protocols in one API. Public read-only API returning current vault data aggregated by Earnbase.",
+    "contact": {
+      "name": "Earnbase",
+      "url": "https://earnbase.finance"
+    }
+  },
+  "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
+  "servers": [{ "url": "https://earnbase.finance/api/v1" }],
+  "paths": {
+    "/vaults": {
+      "get": {
+        "summary": "List vaults",
+        "description": "Returns the latest snapshot of vaults. The response includes a top-level `updated_at` (Unix time in milliseconds) and an array of vault objects in `data`.",
+        "operationId": "listVaults",
+        "tags": ["Vaults"],
+        "responses": {
+          "200": {
+            "description": "Successful response with vault list.",
+            "headers": {
+              "ETag": {
+                "description": "Entity tag for conditional requests.",
+                "schema": { "type": "string" }
+              },
+              "Cache-Control": {
+                "description": "Caching policy for this response.",
+                "schema": { "type": "string" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VaultListResponse" },
+                "examples": {
+                  "sample": {
+                    "summary": "Trimmed example",
+                    "value": {
+                      "updated_at": 1757916000000,
+                      "data": [
+                        {
+                          "_id": "67eab5ee83e514c83402d812",
+                          "poolId": "72124487-ba91-46d8-907e-31b8eca90af3",
+                          "vault": "USDC",
+                          "platform": "Yearn",
+                          "productName": "USDC Vault #1",
+                          "productLink": "https://yearn.fi/vaults/1/0xa354F35829Ae975e850e23e9615b11Da1B3dC4DE",
+                          "spotApy": 2.78301,
+                          "weeklyApy": 3.104027142857143,
+                          "monthlyApy": 2.8365716666666656,
+                          "lifeTimeApy": 4.015206757877279,
+                          "operatingSince": 1648339200000,
+                          "tvl": 7844045,
+                          "__v": 0,
+                          "network": "Mainnet"
+                        },
+                        {
+                          "_id": "67f3ec27b0bbc13d07b151d2",
+                          "poolId": "34d90c49-da88-49b2-937e-04c2b1f5d7fe",
+                          "network": "Base",
+                          "vault": "USDC",
+                          "platform": "Morpho",
+                          "productName": "Gauntlet Core",
+                          "productLink": "https://app.morpho.org/base/vault/0xc0c5689e6f4D256E861F65465b691aeEcC0dEb12/gauntlet-usdc-core",
+                          "spotApy": 6.87586,
+                          "weeklyApy": 6.449495714285715,
+                          "monthlyApy": 7.471252333333335,
+                          "lifeTimeApy": 7.008737319587631,
+                          "operatingSince": 1718668800000,
+                          "tvl": 5761547,
+                          "__v": 0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request."
+          },
+          "429": {
+            "description": "Too many requests."
+          },
+          "500": {
+            "description": "Server error."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UnixTimeMs": {
+        "type": "integer",
+        "format": "int64",
+        "description": "Unix epoch time in **milliseconds**."
+      },
+      "Percentage": {
+        "type": "number",
+        "format": "double",
+        "description": "Percentage value expressed as a number (e.g., 7.5 means 7.5%)."
+      },
+      "Vault": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Vault document identifier (Mongo ObjectId).",
+            "pattern": "^[0-9a-fA-F]{24}$",
+            "examples": ["67eab5ee83e514c83402d812"]
+          },
+          "poolId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Stable UUID for the underlying pool/vault.",
+            "examples": ["72124487-ba91-46d8-907e-31b8eca90af3"]
+          },
+          "network": {
+            "type": "string",
+            "description": "Network/chain name (e.g., Mainnet, Base, Arbitrum).",
+            "examples": ["Mainnet", "Base", "Arbitrum"]
+          },
+          "vault": {
+            "type": "string",
+            "description": "Asset symbol.",
+            "examples": ["USDC"]
+          },
+          "platform": {
+            "type": "string",
+            "description": "Protocol/platform name.",
+            "examples": ["Yearn", "Morpho", "Aave", "Beefy"]
+          },
+          "productName": {
+            "type": "string",
+            "description": "Human-readable product/vault name."
+          },
+          "productLink": {
+            "type": "string",
+            "format": "uri",
+            "description": "Deep link to the product on the platform."
+          },
+          "spotApy": {
+            "$ref": "#/components/schemas/Percentage",
+            "description": "Current snapshot APY (%)."
+          },
+          "weeklyApy": {
+            "$ref": "#/components/schemas/Percentage",
+            "description": "7-day average APY (%)."
+          },
+          "monthlyApy": {
+            "$ref": "#/components/schemas/Percentage",
+            "description": "30-day average APY (%)."
+          },
+          "lifeTimeApy": {
+            "$ref": "#/components/schemas/Percentage",
+            "description": "Lifetime average APY (%)."
+          },
+          "operatingSince": {
+            "$ref": "#/components/schemas/UnixTimeMs",
+            "description": "When the vault/product started operating."
+          },
+          "tvl": {
+            "type": "number",
+            "format": "double",
+            "description": "Total value locked. (Your examples look like USD; if so, note that here.)"
+          },
+          "__v": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Document revision/version."
+          },
+          "sponsored": {
+            "type": "boolean",
+            "description": "Whether the placement is sponsored.",
+            "nullable": true
+          }
+        },
+        "required": [
+          "_id",
+          "poolId",
+          "vault",
+          "platform",
+          "productName",
+          "productLink",
+          "spotApy",
+          "weeklyApy",
+          "monthlyApy",
+          "lifeTimeApy",
+          "operatingSince",
+          "tvl",
+          "__v"
+        ]
+      },
+      "VaultListResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "updated_at": {
+            "$ref": "#/components/schemas/UnixTimeMs",
+            "description": "Last time the dataset was refreshed."
+          },
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Vault" }
+          }
+        },
+        "required": ["updated_at", "data"]
+      }
+    }
+  },
+  "tags": [{ "name": "Vaults", "description": "Endpoints for reading vault data." }]
+}
