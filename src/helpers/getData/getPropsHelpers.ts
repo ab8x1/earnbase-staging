@@ -43,6 +43,7 @@ export type poolInfoDataType = {
   productName: string;
   productLink: string;
   tvl: number;
+  tvlVision?: number;
   sponsored?: boolean;
 } & apyInfoType;
 
@@ -64,7 +65,6 @@ function aprToApyPercent(aprPercent: number): number {
   return apyDecimal * 100; // return APY as percent
 }
 
-
 export async function getGoogleSheetsData(ranges: string[]) {
   const auth = new google.auth.GoogleAuth({
     credentials: {
@@ -85,7 +85,17 @@ export async function getGoogleSheetsData(ranges: string[]) {
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 export function formatPoolData(rawData: any[][]) {
   const formatedData: poolInfoType = rawData.map(
-    ([vault, network, platform, productName, poolId, readApyBase, productLink, isSponsored, tokenAddress]) => ({
+    ([
+      vault,
+      network,
+      platform,
+      productName,
+      poolId,
+      readApyBase,
+      productLink,
+      isSponsored,
+      tokenAddress,
+    ]) => ({
       vault: (vault as string) || '',
       network: (network as string) || '',
       platform: (platform as string) || '',
@@ -94,7 +104,7 @@ export function formatPoolData(rawData: any[][]) {
       readApyBase: !!readApyBase,
       productLink: (productLink as string) || '',
       sponsored: !!isSponsored,
-      tokenAddress: tokenAddress ? (tokenAddress as string) : undefined
+      tokenAddress: tokenAddress ? (tokenAddress as string) : undefined,
     })
   );
   return formatedData;
@@ -104,8 +114,17 @@ export async function getPoolApyData(poolInfo: poolInfoType) {
   try {
     const poolApyInfo: poolsInfoDataType = [];
     for (const platformData of poolInfo) {
-      const { poolId, readApyBase, vault, platform, productLink, productName, network, sponsored, tokenAddress } =
-        platformData;
+      const {
+        poolId,
+        readApyBase,
+        vault,
+        platform,
+        productLink,
+        productName,
+        network,
+        sponsored,
+        tokenAddress,
+      } = platformData;
       const rawApyData = await fetch(`https://yields.llama.fi/chart/${poolId}`);
       const rawApyDataJson = await rawApyData.json();
       const apyData: apyDataType = rawApyDataJson?.data || [];
@@ -133,23 +152,24 @@ export async function getPoolApyData(poolInfo: poolInfoType) {
       let spotApyVision: number | undefined;
       let weeklyApyVision: number | undefined;
       let monthlyApyVision: number | undefined;
-      if(tokenAddress){
-          const chainKey = network.toUpperCase() as keyof typeof ChainId;
-          if ((chainKey in ChainId)) {
-            const chainId = ChainId[chainKey];
-            try{
-              const vaultData = await getLatestAPRAndMetadataFromAlchemy(tokenAddress, chainId);
-              spotApyVision = Number(vaultData?.data?.[0]?.apr?.['1d']) || undefined;
-              if(spotApyVision) aprToApyPercent(spotApyVision);
-              weeklyApyVision = Number(vaultData?.data?.[0]?.apr?.['7d']) || undefined;
-              if(weeklyApyVision) aprToApyPercent(weeklyApyVision);
-              monthlyApyVision = Number(vaultData?.data?.[0]?.apr?.['30d']) || undefined;
-              if(monthlyApyVision) aprToApyPercent(monthlyApyVision);
-            }
-            catch(e){
-             console.log(e); 
-            }
+      let tvlVision: number | undefined;
+      if (tokenAddress) {
+        const chainKey = network.toUpperCase() as keyof typeof ChainId;
+        if (chainKey in ChainId) {
+          const chainId = ChainId[chainKey];
+          try {
+            const vaultData = await getLatestAPRAndMetadataFromAlchemy(tokenAddress, chainId);
+            tvlVision = vaultData.data[0]?.tvl;
+            spotApyVision = Number(vaultData?.data?.[0]?.apr?.['1d']) || undefined;
+            if (spotApyVision) aprToApyPercent(spotApyVision);
+            weeklyApyVision = Number(vaultData?.data?.[0]?.apr?.['7d']) || undefined;
+            if (weeklyApyVision) aprToApyPercent(weeklyApyVision);
+            monthlyApyVision = Number(vaultData?.data?.[0]?.apr?.['30d']) || undefined;
+            if (monthlyApyVision) aprToApyPercent(monthlyApyVision);
+          } catch (e) {
+            console.log(e);
           }
+        }
       }
       poolApyInfo.push({
         poolId,
@@ -167,6 +187,7 @@ export async function getPoolApyData(poolInfo: poolInfoType) {
         lifeTimeApy,
         operatingSince,
         tvl,
+        tvlVision,
         sponsored,
       });
     }

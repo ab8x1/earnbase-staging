@@ -16,6 +16,7 @@ export interface Pools extends Document {
   lifeTimeApy: number;
   operatingSince: number;
   tvl: number;
+  tvlVision?: number;
   sponsored: boolean;
 }
 
@@ -35,6 +36,7 @@ const PoolSchema = new Schema<Pools>({
   lifeTimeApy: { type: Number, required: true },
   operatingSince: { type: Number, required: true },
   tvl: { type: Number, required: true },
+  tvlVision: { type: Number },
   sponsored: { type: Boolean },
 });
 

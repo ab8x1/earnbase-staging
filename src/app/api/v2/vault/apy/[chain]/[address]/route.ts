@@ -8,32 +8,35 @@ export const dynamic = 'force-dynamic'; // don’t let Next cache the handler
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ chain: string, address: string }> },
+  { params }: { params: Promise<{ chain: string; address: string }> }
 ) {
-  try{
-      const address = (await params).address;
-      const chain = (await params).chain;
-      
-      if(!isValidChain(chain)) throw new Error("Invalid chain");
+  try {
+    const address = (await params).address;
+    const chain = (await params).chain;
 
-      const chainKey = chain.toUpperCase() as keyof typeof ChainId;
+    if (!isValidChain(chain)) throw new Error('Invalid chain');
 
-      if (!(chainKey in ChainId)) {
-        throw new Error(`Unknown network: ${chain}`);
-      }
+    const chainKey = chain.toUpperCase() as keyof typeof ChainId;
 
-      const chainId = ChainId[chainKey];
+    if (!(chainKey in ChainId)) {
+      throw new Error(`Unknown network: ${chain}`);
+    }
 
+    const chainId = ChainId[chainKey];
 
-      const vaultData = await getLatestAPRAndMetadataFromAlchemy(address, chainId);
+    const vaultData = await getLatestAPRAndMetadataFromAlchemy(address, chainId);
 
-      return new Response(JSON.stringify({...vaultData, source: {
-        company: "Spectra",
-        website: "https://www.spectra.finance/"
-      }}));
-  }
-  catch(e){
+    return new Response(
+      JSON.stringify({
+        ...vaultData,
+        source: {
+          company: 'Spectra',
+          website: 'https://www.spectra.finance/',
+        },
+      })
+    );
+  } catch (e) {
     console.log(e);
-    return new Response(JSON.stringify({data: "error"}))
+    return new Response(JSON.stringify({ data: 'error' }));
   }
 }

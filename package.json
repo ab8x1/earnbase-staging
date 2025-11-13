@@ -43,6 +43,6 @@
     "@typechain/ethers-v5": "^10.2.0"
   },
   "resolutions": {
-      "ethers": "^5.0.27"
+    "ethers": "^5.0.27"
   }
 }

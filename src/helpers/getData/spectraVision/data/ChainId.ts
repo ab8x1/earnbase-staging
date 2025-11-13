@@ -1,18 +1,17 @@
 enum ChainId {
-    MAINNET = 1,
-    GOERLI = 5,
-    OPTIMISM = 10,
-    BSC = 56,
-    POLYGON = 137,
-    BASE = 8453,
-    ARBITRUM = 42161,
-    AVALANCHE = 43114,
-    SEPOLIA = 11155111,
-    SONIC = 146,
-    HEMI = 43111,
-    HYPEREVM = 999,
-    KATANA = 747474,
-    BNB = 56,
+  MAINNET = 1,
+  GOERLI = 5,
+  OPTIMISM = 10,
+  POLYGON = 137,
+  BASE = 8453,
+  ARBITRUM = 42161,
+  AVALANCHE = 43114,
+  SEPOLIA = 11155111,
+  SONIC = 146,
+  HEMI = 43111,
+  HYPEREVM = 999,
+  KATANA = 747474,
+  BNB = 56,
 }
 
-export default ChainId
+export default ChainId;
