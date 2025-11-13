@@ -305,8 +305,10 @@ export default function VaultTable({
                     platform,
                     productLink,
                     spotApy,
+                    spotApyVision,
                     tvl,
                     monthlyApy,
+                    monthlyApyVision,
                     operatingSince,
                     productName,
                     network,
@@ -343,17 +345,17 @@ export default function VaultTable({
                         className={styles.tableData}
                         style={{ color: '#00A63E', fontWeight: 600 }}
                       >
-                        {spotApy.toFixed(2)}%
+                        {spotApy.toFixed(2)}% _<span style={{color: 'orange'}}>{spotApyVision?.toFixed(2)}%</span>
                       </div>
                     </td>
                     <td>
-                      <div className={styles.tableData}>{monthlyApy.toFixed(2)}%</div>
+                      <div className={styles.tableData}>{monthlyApy.toFixed(2)}% _<span style={{color: 'orange'}}>{monthlyApyVision?.toFixed(2)}%</span></div>
                     </td>
                     {/* <td>
-                                    <div className={styles.tableData}>
-                                        {lifeTimeApy.toFixed(2)}%
-                                    </div>
-                                </td> */}
+                        <div className={styles.tableData}>
+                            {lifeTimeApy.toFixed(2)}%
+                        </div>
+                    </td> */}
                     <td>
                       <div className={styles.tableData}>${formatMillions(tvl, 2)}</div>
                     </td>

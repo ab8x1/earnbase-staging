@@ -12,6 +12,7 @@ enum ChainId {
     HEMI = 43111,
     HYPEREVM = 999,
     KATANA = 747474,
+    BNB = 56,
 }
 
 export default ChainId

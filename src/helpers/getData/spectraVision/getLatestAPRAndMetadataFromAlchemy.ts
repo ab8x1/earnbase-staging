@@ -61,7 +61,7 @@ export default async function getLatestAPRAndMetadataFromAlchemy(
     )
 
     const result = await fetchFromAlchemy(calls, chainId)
-
+    
     const [name, symbol, decimals] = result.splice(0, 3)
     const rates = result.map(({ result }) => {
         try {

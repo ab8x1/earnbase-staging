@@ -8,8 +8,11 @@ export interface Pools extends Document {
   productName: string;
   productLink: string;
   spotApy: number;
+  spotApyVision?: number;
   weeklyApy: number;
+  weeklyApyVision?: number;
   monthlyApy: number;
+  monthlyApyVision?: number;
   lifeTimeApy: number;
   operatingSince: number;
   tvl: number;
@@ -24,8 +27,11 @@ const PoolSchema = new Schema<Pools>({
   productName: { type: String, required: true },
   productLink: { type: String, required: true },
   spotApy: { type: Number, required: true },
+  spotApyVision: { type: Number },
   weeklyApy: { type: Number, required: true },
+  weeklyApyVision: { type: Number },
   monthlyApy: { type: Number, required: true },
+  monthlyApyVision: { type: Number },
   lifeTimeApy: { type: Number, required: true },
   operatingSince: { type: Number, required: true },
   tvl: { type: Number, required: true },

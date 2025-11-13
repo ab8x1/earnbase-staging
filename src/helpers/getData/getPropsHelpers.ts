@@ -1,4 +1,6 @@
 import { google } from 'googleapis';
+import ChainId from './spectraVision/data/ChainId';
+import getLatestAPRAndMetadataFromAlchemy from './spectraVision/getLatestAPRAndMetadataFromAlchemy';
 
 export type poolInfoType = {
   vault: string;
@@ -9,6 +11,7 @@ export type poolInfoType = {
   readApyBase: boolean;
   productLink: string;
   sponsored?: boolean;
+  tokenAddress?: string;
 }[];
 
 type apyDataType = {
@@ -23,8 +26,11 @@ type apyDataType = {
 
 type apyInfoType = {
   spotApy: number;
+  spotApyVision?: number;
   weeklyApy: number;
+  weeklyApyVision?: number;
   monthlyApy: number;
+  monthlyApyVision?: number;
   lifeTimeApy: number;
   operatingSince: number;
 };
@@ -49,6 +55,16 @@ export type poolsInfoType = {
   indexData: poolsInfoDataType;
 };
 
+function aprToApyPercent(aprPercent: number): number {
+  const days = 365;
+
+  const aprDecimal = aprPercent / 100;
+  const apyDecimal = Math.pow(1 + aprDecimal / days, days) - 1;
+
+  return apyDecimal * 100; // return APY as percent
+}
+
+
 export async function getGoogleSheetsData(ranges: string[]) {
   const auth = new google.auth.GoogleAuth({
     credentials: {
@@ -69,7 +85,7 @@ export async function getGoogleSheetsData(ranges: string[]) {
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 export function formatPoolData(rawData: any[][]) {
   const formatedData: poolInfoType = rawData.map(
-    ([vault, network, platform, productName, poolId, readApyBase, productLink, isSponsored]) => ({
+    ([vault, network, platform, productName, poolId, readApyBase, productLink, isSponsored, tokenAddress]) => ({
       vault: (vault as string) || '',
       network: (network as string) || '',
       platform: (platform as string) || '',
@@ -78,6 +94,7 @@ export function formatPoolData(rawData: any[][]) {
       readApyBase: !!readApyBase,
       productLink: (productLink as string) || '',
       sponsored: !!isSponsored,
+      tokenAddress: tokenAddress ? (tokenAddress as string) : undefined
     })
   );
   return formatedData;
@@ -87,7 +104,7 @@ export async function getPoolApyData(poolInfo: poolInfoType) {
   try {
     const poolApyInfo: poolsInfoDataType = [];
     for (const platformData of poolInfo) {
-      const { poolId, readApyBase, vault, platform, productLink, productName, network, sponsored } =
+      const { poolId, readApyBase, vault, platform, productLink, productName, network, sponsored, tokenAddress } =
         platformData;
       const rawApyData = await fetch(`https://yields.llama.fi/chart/${poolId}`);
       const rawApyDataJson = await rawApyData.json();
@@ -113,6 +130,27 @@ export async function getPoolApyData(poolInfo: poolInfoType) {
       const oldestData = apyData[0];
       const operatingSince = new Date(oldestData?.timestamp?.slice(0, 10))?.getTime() || 0;
       const tvl = newestData.tvlUsd || 0;
+      let spotApyVision: number | undefined;
+      let weeklyApyVision: number | undefined;
+      let monthlyApyVision: number | undefined;
+      if(tokenAddress){
+          const chainKey = network.toUpperCase() as keyof typeof ChainId;
+          if ((chainKey in ChainId)) {
+            const chainId = ChainId[chainKey];
+            try{
+              const vaultData = await getLatestAPRAndMetadataFromAlchemy(tokenAddress, chainId);
+              spotApyVision = Number(vaultData?.data?.[0]?.apr?.['1d']) || undefined;
+              if(spotApyVision) aprToApyPercent(spotApyVision);
+              weeklyApyVision = Number(vaultData?.data?.[0]?.apr?.['7d']) || undefined;
+              if(weeklyApyVision) aprToApyPercent(weeklyApyVision);
+              monthlyApyVision = Number(vaultData?.data?.[0]?.apr?.['30d']) || undefined;
+              if(monthlyApyVision) aprToApyPercent(monthlyApyVision);
+            }
+            catch(e){
+             console.log(e); 
+            }
+          }
+      }
       poolApyInfo.push({
         poolId,
         network,
@@ -121,8 +159,11 @@ export async function getPoolApyData(poolInfo: poolInfoType) {
         productName,
         productLink,
         spotApy,
+        spotApyVision,
         weeklyApy,
+        weeklyApyVision,
         monthlyApy,
+        monthlyApyVision,
         lifeTimeApy,
         operatingSince,
         tvl,

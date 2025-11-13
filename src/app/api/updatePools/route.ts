@@ -23,22 +23,22 @@ export async function GET(request: NextRequest) {
     const { startUpdateFromIndex, updateAfter } = lastStats;
     if (Date.now() > updateAfter) {
       const chainsData = await getGoogleSheetsData([
-        'USDC.Mainnet!A2:H',
-        'USDC.Arbitrum!A2:H',
-        'USDC.Base!A2:H',
-        'USDC.BNB!A2:H',
-        'USDC.Sonic!A2:H',
-        'USDC.Avalanche!A2:H',
-        'USDT.Mainnet!A2:H',
-        'ETH.Mainnet!A2:H',
-        'ETH.Base!A2:H',
-        'EURC.Mainnet!A2:H',
-        'EURC.Base!A2:H',
-        'EURC.Avalanche!A2:H',
-        'WBTC.Mainnet!A2:H',
-        'WBTC.Arbitrum!A2:H',
-        'cbBTC.Mainnet!A2:H',
-        'cbBTC.Base!A2:H',
+        'USDC.Mainnet!A2:I',
+        'USDC.Arbitrum!A2:I',
+        'USDC.Base!A2:I',
+        'USDC.BNB!A2:I',
+        'USDC.Sonic!A2:I',
+        'USDC.Avalanche!A2:I',
+        'USDT.Mainnet!A2:I',
+        'ETH.Mainnet!A2:I',
+        'ETH.Base!A2:I',
+        'EURC.Mainnet!A2:I',
+        'EURC.Base!A2:I',
+        'EURC.Avalanche!A2:I',
+        'WBTC.Mainnet!A2:I',
+        'WBTC.Arbitrum!A2:I',
+        'cbBTC.Mainnet!A2:I',
+        'cbBTC.Base!A2:I',
       ]);
       const rawDataUSDCMainnet = chainsData?.[0]?.values || [];
       const rawDataUSDCArbitrum = chainsData?.[1]?.values || [];
