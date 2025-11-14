@@ -1,6 +1,8 @@
 import { google } from 'googleapis';
 import ChainId from './spectraVision/data/ChainId';
 import getLatestAPRAndMetadataFromAlchemy from './spectraVision/getLatestAPRAndMetadataFromAlchemy';
+import getDataFromVision from './spectraVision/getDataFromVision';
+import getDataFromApi from './getDataFromAPi';
 
 export type poolInfoType = {
   vault: string;
@@ -26,11 +28,11 @@ type apyDataType = {
 
 type apyInfoType = {
   spotApy: number;
-  spotApyVision?: number;
+  spotApyAlternative?: number;
   weeklyApy: number;
-  weeklyApyVision?: number;
+  weeklyApyAlternative?: number;
   monthlyApy: number;
-  monthlyApyVision?: number;
+  monthlyApyAlternative?: number;
   lifeTimeApy: number;
   operatingSince: number;
 };
@@ -43,7 +45,7 @@ export type poolInfoDataType = {
   productName: string;
   productLink: string;
   tvl: number;
-  tvlVision?: number;
+  tvlAlternative?: number;
   sponsored?: boolean;
 } & apyInfoType;
 
@@ -55,15 +57,6 @@ export type poolsInfoType = {
   updatedAt: string;
   indexData: poolsInfoDataType;
 };
-
-function aprToApyPercent(aprPercent: number): number {
-  const days = 365;
-
-  const aprDecimal = aprPercent / 100;
-  const apyDecimal = Math.pow(1 + aprDecimal / days, days) - 1;
-
-  return apyDecimal * 100; // return APY as percent
-}
 
 export async function getGoogleSheetsData(ranges: string[]) {
   const auth = new google.auth.GoogleAuth({
@@ -149,26 +142,17 @@ export async function getPoolApyData(poolInfo: poolInfoType) {
       const oldestData = apyData[0];
       const operatingSince = new Date(oldestData?.timestamp?.slice(0, 10))?.getTime() || 0;
       const tvl = newestData.tvlUsd || 0;
-      let spotApyVision: number | undefined;
-      let weeklyApyVision: number | undefined;
-      let monthlyApyVision: number | undefined;
-      let tvlVision: number | undefined;
+      let spotApyAlternative: number | undefined;
+      let weeklyApyAlternative: number | undefined;
+      let monthlyApyAlternative: number | undefined;
+      let tvlAlternative: number | undefined;
       if (tokenAddress) {
-        const chainKey = network.toUpperCase() as keyof typeof ChainId;
-        if (chainKey in ChainId) {
-          const chainId = ChainId[chainKey];
-          try {
-            const vaultData = await getLatestAPRAndMetadataFromAlchemy(tokenAddress, chainId);
-            tvlVision = vaultData.data[0]?.tvl;
-            spotApyVision = Number(vaultData?.data?.[0]?.apr?.['1d']) || undefined;
-            if (spotApyVision) aprToApyPercent(spotApyVision);
-            weeklyApyVision = Number(vaultData?.data?.[0]?.apr?.['7d']) || undefined;
-            if (weeklyApyVision) aprToApyPercent(weeklyApyVision);
-            monthlyApyVision = Number(vaultData?.data?.[0]?.apr?.['30d']) || undefined;
-            if (monthlyApyVision) aprToApyPercent(monthlyApyVision);
-          } catch (e) {
-            console.log(e);
-          }
+        const dataFromApi = await getDataFromApi(platform, tokenAddress, network);
+        if(dataFromApi){
+          spotApyAlternative = dataFromApi.spotApy;
+          weeklyApyAlternative = dataFromApi.weeklyApy;
+          monthlyApyAlternative = dataFromApi.monthlyApy;
+          tvlAlternative = dataFromApi.tvl;
         }
       }
       poolApyInfo.push({
@@ -179,15 +163,15 @@ export async function getPoolApyData(poolInfo: poolInfoType) {
         productName,
         productLink,
         spotApy,
-        spotApyVision,
+        spotApyAlternative,
         weeklyApy,
-        weeklyApyVision,
+        weeklyApyAlternative,
         monthlyApy,
-        monthlyApyVision,
+        monthlyApyAlternative,
         lifeTimeApy,
         operatingSince,
         tvl,
-        tvlVision,
+        tvlAlternative,
         sponsored,
       });
     }
