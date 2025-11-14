@@ -1,7 +1,4 @@
 import { google } from 'googleapis';
-import ChainId from './spectraVision/data/ChainId';
-import getLatestAPRAndMetadataFromAlchemy from './spectraVision/getLatestAPRAndMetadataFromAlchemy';
-import getDataFromVision from './spectraVision/getDataFromVision';
 import getDataFromApi from './getDataFromAPi';
 
 export type poolInfoType = {
@@ -148,7 +145,7 @@ export async function getPoolApyData(poolInfo: poolInfoType) {
       let tvlAlternative: number | undefined;
       if (tokenAddress) {
         const dataFromApi = await getDataFromApi(platform, tokenAddress, network);
-        if(dataFromApi){
+        if (dataFromApi) {
           spotApyAlternative = dataFromApi.spotApy;
           weeklyApyAlternative = dataFromApi.weeklyApy;
           monthlyApyAlternative = dataFromApi.monthlyApy;

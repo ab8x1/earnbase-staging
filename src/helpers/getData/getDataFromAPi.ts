@@ -1,26 +1,27 @@
-import getDataFromMorpho from "./morphoApi/getDatafromMorpho";
-import ChainId from "./spectraVision/data/ChainId";
-import getDataFromVision from "./spectraVision/getDataFromVision";
+import getDataFromAave from './aaveApi/getDatafromAave';
+import getDataFromMorpho from './morphoApi/getDatafromMorpho';
+import ChainId from './spectraVision/data/ChainId';
+import getDataFromVision from './spectraVision/getDataFromVision';
 
-export default async function getDataFromApi(protocol: string, address: string, network: string){
-    try{
-        const chainKey = network.toUpperCase() as keyof typeof ChainId;
-        if(!(chainKey in ChainId)){
-            throw new Error("Wrong chain for api")
-        } 
-        const chainId = ChainId[chainKey];
-        if(protocol === "Morpho"){
-            const dataFromMorpho = await getDataFromMorpho(address, chainId);
-            return dataFromMorpho;
-        }
-        else {
-            const dataFromVision = await getDataFromVision(address, chainId);
-            return dataFromVision;
-        }
+export default async function getDataFromApi(protocol: string, address: string, network: string) {
+  try {
+    const chainKey = network.toUpperCase() as keyof typeof ChainId;
+    if (!(chainKey in ChainId)) {
+      throw new Error('Wrong chain for api');
     }
-    catch(e){
-        console.log(e);
-        return null;
+    const chainId = ChainId[chainKey];
+    switch (protocol) {
+      case 'Morpho':
+        return await getDataFromMorpho(address, chainId);
+
+      case 'Aave':
+        return await getDataFromAave(address, chainId);
+
+      default:
+        return await getDataFromVision(address, chainId);
     }
-    
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
 }

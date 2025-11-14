@@ -353,7 +353,9 @@ export default function VaultTable({
                     <td>
                       <div className={styles.tableData}>
                         {monthlyApy.toFixed(2)}% _
-                        <span style={{ color: 'orange' }}>{monthlyApyAlternative?.toFixed(2)}%</span>
+                        <span style={{ color: 'orange' }}>
+                          {monthlyApyAlternative?.toFixed(2)}%
+                        </span>
                       </div>
                     </td>
                     {/* <td>
