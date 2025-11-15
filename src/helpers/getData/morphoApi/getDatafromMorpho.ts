@@ -11,20 +11,20 @@ export default async function getDataFromMorpho(
 ): Promise<MorphoData | null> {
   try {
     const query = `
-    query VaultApy($address: String!, $chainId: Int!) {
-      vaultByAddress(address: $address, chainId: $chainId) {
-        address
-        state {
-          dailyApy
-          weeklyApy
-          monthlyApy
-          allocation {
-            supplyAssetsUsd
+      query VaultApy($address: String!, $chainId: Int!) {
+        vaultByAddress(address: $address, chainId: $chainId) {
+          address
+          state {
+            dailyApy
+            weeklyApy
+            monthlyApy
+            allocation {
+              supplyAssetsUsd
+            }
           }
         }
       }
-    }
-  `;
+    `;
 
     const res = await fetch('https://api.morpho.org/graphql', {
       method: 'POST',

@@ -5,6 +5,7 @@ import isValidChain from '@/helpers/getData/spectraVision/utils/isValidChain';
 import { HistoricalAPR } from '@/helpers/getData/spectraVision/data/HistoricalAPR';
 import getDataFromMorpho, { MorphoData } from '@/helpers/getData/morphoApi/getDatafromMorpho';
 import getDataFromAave from '@/helpers/getData/aaveApi/getDatafromAave';
+import getDataFromEuler from '@/helpers/getData/eulerApi/getDataFromEuler';
 
 export const runtime = 'nodejs'; // use Node runtime
 export const dynamic = 'force-dynamic'; // don’t let Next cache the handler
@@ -51,6 +52,15 @@ export async function GET(
             source: { company: 'Aave', website: 'https://aave.com/' },
           };
         }
+        break;
+      }
+
+      case 'euler': {
+        const data = await getDataFromEuler(address, chainId);
+        vaultData = {
+          ...data,
+          source: { company: 'Euler', website: 'https://www.euler.finance/' },
+        };
         break;
       }
 
