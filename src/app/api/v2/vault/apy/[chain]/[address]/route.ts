@@ -69,7 +69,7 @@ export async function GET(
         const data = await getDataFromIPOR(address, chainId);
         vaultData = {
           ...data,
-          source: { company: 'Euler', website: 'https://www.euler.finance/' },
+          source: { company: 'ipor', website: 'https://www.ipor.io/' },
         };
         break;
       }
