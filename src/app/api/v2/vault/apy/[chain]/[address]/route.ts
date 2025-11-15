@@ -5,7 +5,8 @@ import isValidChain from '@/helpers/getData/spectraVision/utils/isValidChain';
 import { HistoricalAPR } from '@/helpers/getData/spectraVision/data/HistoricalAPR';
 import getDataFromMorpho, { MorphoData } from '@/helpers/getData/morphoApi/getDatafromMorpho';
 import getDataFromAave from '@/helpers/getData/aaveApi/getDatafromAave';
-import getDataFromEuler from '@/helpers/getData/eulerApi/getDataFromEuler';
+import getDataFromEulerExperimental from '@/helpers/getData/eulerApiExperimental/getDataFromEulerExperimental';
+import getDataFromIPOR from '@/helpers/getData/iporApi/getDataFromIpor';
 
 export const runtime = 'nodejs'; // use Node runtime
 export const dynamic = 'force-dynamic'; // don’t let Next cache the handler
@@ -54,9 +55,18 @@ export async function GET(
         }
         break;
       }
-
+      // Experimental only for testing
       case 'euler': {
-        const data = await getDataFromEuler(address, chainId);
+        const data = await getDataFromEulerExperimental(address, chainId);
+        vaultData = {
+          ...data,
+          source: { company: 'Euler', website: 'https://www.euler.finance/' },
+        };
+        break;
+      }
+
+      case 'ipor': {
+        const data = await getDataFromIPOR(address, chainId);
         vaultData = {
           ...data,
           source: { company: 'Euler', website: 'https://www.euler.finance/' },

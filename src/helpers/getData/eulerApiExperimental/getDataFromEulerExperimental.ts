@@ -58,7 +58,7 @@ function splitByTimeframes(items: EulerValtStauts[]) {
   return { last24h, last7days, last30days };
 }
 
-export default async function getDataFromEuler(address: string, chainId: number): Promise<EulerData | null> {
+export default async function getDataFromEulerExperimental(address: string, chainId: number): Promise<EulerData | null> {
   const query = `
     query VaultStateHistory($address: ID!) {
         vaultStatuses(
@@ -87,13 +87,13 @@ export default async function getDataFromEuler(address: string, chainId: number)
   });
 
   if (!res.ok) {
-    throw new Error(`Morpho API error: ${res.status} ${res.statusText}`);
+    throw new Error(`Euler API error: ${res.status} ${res.statusText}`);
   }
 
   const json = await res.json();
 
   if (json.errors?.length) {
-    throw new Error(json.errors[0].message || 'Unknown GraphQL error');
+    throw new Error(json.errors[0].message || 'Unknown Euler GraphQL error');
   }
 
   if(json?.data?.vaultStatuses?.length > 0){
