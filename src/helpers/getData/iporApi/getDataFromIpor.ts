@@ -10,7 +10,9 @@ type IporDataApi = {
     blockTimestamp: string,
     totalBalance: string,
     tvl: string,
+      /* eslint-disable  @typescript-eslint/no-explicit-any*/
     marketBalances: any[],
+      /* eslint-disable  @typescript-eslint/no-explicit-any*/
     dexPositionBalances: any[],
     apr: string,
     apy: string,
