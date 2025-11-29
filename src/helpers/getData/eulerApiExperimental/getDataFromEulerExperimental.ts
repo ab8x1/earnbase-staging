@@ -6,12 +6,12 @@ type EulerData = {
 };
 
 type EulerValtStauts = {
-    totalBorrows: string,
-    accumulatedFees: string,
-    cash: string,
-    supplyApy: string,
-    timestamp: string
-}
+  totalBorrows: string;
+  accumulatedFees: string;
+  cash: string;
+  supplyApy: string;
+  timestamp: string;
+};
 
 const qrpahUrl: {
   [key: string]: string;
@@ -58,7 +58,10 @@ function splitByTimeframes(items: EulerValtStauts[]) {
   return { last24h, last7days, last30days };
 }
 
-export default async function getDataFromEulerExperimental(address: string, chainId: number): Promise<EulerData | null> {
+export default async function getDataFromEulerExperimental(
+  address: string,
+  chainId: number
+): Promise<EulerData | null> {
   const query = `
     query VaultStateHistory($address: ID!) {
         vaultStatuses(
@@ -96,32 +99,36 @@ export default async function getDataFromEulerExperimental(address: string, chai
     throw new Error(json.errors[0].message || 'Unknown Euler GraphQL error');
   }
 
-  if(json?.data?.vaultStatuses?.length > 0){
+  if (json?.data?.vaultStatuses?.length > 0) {
     const vaultStatuses: EulerValtStauts[] = json?.data?.vaultStatuses;
     const { last24h, last7days, last30days } = splitByTimeframes(vaultStatuses);
-    const spotApy = last24h.reduce(
+    const spotApy =
+      last24h.reduce(
         (acc: number, history: EulerValtStauts) => acc + (Number(history.supplyApy) || 0),
         0
-    ) / last24h.length || 1;
-    const weeklyApy = last7days.reduce(
+      ) / last24h.length || 1;
+    const weeklyApy =
+      last7days.reduce(
         (acc: number, history: EulerValtStauts) => acc + (Number(history.supplyApy) || 0),
         0
-    ) / last7days.length || 1;
-    const monthlyApy = last30days.reduce(
+      ) / last7days.length || 1;
+    const monthlyApy =
+      last30days.reduce(
         (acc: number, history: EulerValtStauts) => acc + (Number(history.supplyApy) || 0),
         0
-    ) / last30days.length || 1;
+      ) / last30days.length || 1;
     const newestVaultStatus = vaultStatuses[0];
-    const tvl = Number(newestVaultStatus.cash) + Number(newestVaultStatus.totalBorrows) - Number(newestVaultStatus.accumulatedFees);
+    const tvl =
+      Number(newestVaultStatus.cash) +
+      Number(newestVaultStatus.totalBorrows) -
+      Number(newestVaultStatus.accumulatedFees);
     return {
-        spotApy: spotApy * (10 ** -25),
-        weeklyApy: weeklyApy * (10 ** -25),
-        monthlyApy: monthlyApy * (10 ** -25),
-        tvl
-    }
-  }
-  else{
+      spotApy: spotApy * 10 ** -25,
+      weeklyApy: weeklyApy * 10 ** -25,
+      monthlyApy: monthlyApy * 10 ** -25,
+      tvl,
+    };
+  } else {
     return null;
   }
-
 }

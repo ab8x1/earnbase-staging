@@ -7,17 +7,19 @@ import getDataFromMorpho, { MorphoData } from '@/helpers/getData/morphoApi/getDa
 import getDataFromAave from '@/helpers/getData/aaveApi/getDatafromAave';
 import getDataFromEulerExperimental from '@/helpers/getData/eulerApiExperimental/getDataFromEulerExperimental';
 import getDataFromIPOR from '@/helpers/getData/iporApi/getDataFromIpor';
+import getDataFromLagoon from '@/helpers/getData/lagoonApi/getDataFromLagoon';
 
 export const runtime = 'nodejs'; // use Node runtime
 export const dynamic = 'force-dynamic'; // don’t let Next cache the handler
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ chain: string; address: string }> }
+  { params }: { params: Promise<{ chain: string; token: string; address: string }> }
 ) {
   try {
     const address = (await params).address;
     const chain = (await params).chain;
+    const token = (await params).token;
     const platform = request.nextUrl.searchParams.get('platform');
 
     if (!isValidChain(chain)) throw new Error('Invalid chain');
@@ -73,9 +75,18 @@ export async function GET(
         };
         break;
       }
+      // Experimental only for testing
+      case 'lagoon': {
+        const data = await getDataFromLagoon(address, chainId, 6);
+        vaultData = {
+          ...data,
+          source: { company: 'lagoon', website: 'https://lagoon.finance/' },
+        };
+        break;
+      }
 
       default: {
-        const data = await getLatestAPRAndMetadataFromAlchemy(address, chainId);
+        const data = await getLatestAPRAndMetadataFromAlchemy(address, chainId, token);
         vaultData = {
           ...data,
           source: { company: 'Spectra', website: 'https://www.spectra.finance/' },

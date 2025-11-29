@@ -10,9 +10,9 @@ function aprToApyPercent(aprPercent: number): number {
   return apyDecimal * 100; // return APY as percent
 }
 
-export default async function getDataFromVision(tokenAddress: string, chainId: ChainId) {
+export default async function getDataFromVision(tokenAddress: string, chainId: ChainId, token: string) {
   try {
-    const vaultData = await getLatestAPRAndMetadataFromAlchemy(tokenAddress, chainId);
+    const vaultData = await getLatestAPRAndMetadataFromAlchemy(tokenAddress, chainId, token);
     const tvlVision = vaultData.data[0]?.tvl;
     let spotApyVision = Number(vaultData?.data?.[0]?.apr?.['1d']) || undefined;
     if (spotApyVision) spotApyVision = aprToApyPercent(spotApyVision);

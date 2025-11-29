@@ -144,7 +144,7 @@ export async function getPoolApyData(poolInfo: poolInfoType) {
       let monthlyApyAlternative: number | undefined;
       let tvlAlternative: number | undefined;
       if (tokenAddress) {
-        const dataFromApi = await getDataFromApi(platform, tokenAddress, network);
+        const dataFromApi = await getDataFromApi(platform, tokenAddress, network, vault);
         if (dataFromApi) {
           spotApyAlternative = dataFromApi.spotApy;
           weeklyApyAlternative = dataFromApi.weeklyApy;

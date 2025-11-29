@@ -6,10 +6,12 @@ import computeAPRFromRates from './utils/computeAPRFromRates';
 import { getBlocksFromTimestamps } from './utils/getBlocksFromTimestamps';
 
 import fetchFromAlchemy from './fetchFromAlchemy';
+import TokenDecimals from './data/TokenDecimals';
 
 export default async function getLatestAPRAndMetadataFromAlchemy(
   tokenAddress: string,
-  chainId: ChainId
+  chainId: ChainId,
+  token: string
 ): Promise<HistoricalAPR> {
   const to = Math.floor(Date.now() / 1000 / SECONDS_PER_DAY) * SECONDS_PER_DAY; // get current day timestamp and align it on the same scale as the subgraph
   const timestamps = [to, to - SECONDS_PER_DAY, to - SECONDS_PER_DAY * 7, to - SECONDS_PER_MONTH];
@@ -76,8 +78,9 @@ export default async function getLatestAPRAndMetadataFromAlchemy(
   const tokenDecimals = BigNumber.from(decimals.result).toNumber();
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   const rawTotalAssets = BigNumber.from((totalAssetsResp as any).result);
+  const tokenDecimalsConst = TokenDecimals[token] || tokenDecimals;
+  const totalAssetsNormalized = ethers.utils.formatUnits(rawTotalAssets, tokenDecimalsConst);
 
-  const totalAssetsNormalized = ethers.utils.formatUnits(rawTotalAssets, tokenDecimals);
 
   const rates = result.map(({ result }) => {
     try {

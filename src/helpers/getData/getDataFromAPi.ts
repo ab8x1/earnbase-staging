@@ -4,7 +4,7 @@ import getDataFromMorpho from './morphoApi/getDatafromMorpho';
 import ChainId from './spectraVision/data/ChainId';
 import getDataFromVision from './spectraVision/getDataFromVision';
 
-export default async function getDataFromApi(protocol: string, address: string, network: string) {
+export default async function getDataFromApi(protocol: string, address: string, network: string, token: string) {
   try {
     const chainKey = network.toUpperCase() as keyof typeof ChainId;
     if (!(chainKey in ChainId)) {
@@ -22,7 +22,7 @@ export default async function getDataFromApi(protocol: string, address: string, 
         return await getDataFromIPOR(address, chainId);
 
       default:
-        return await getDataFromVision(address, chainId);
+        return await getDataFromVision(address, chainId, token);
     }
   } catch (e) {
     console.log(e);

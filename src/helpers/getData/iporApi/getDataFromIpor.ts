@@ -6,20 +6,20 @@ type IporData = {
 };
 
 type IporDataApi = {
-    blockNumber: number,
-    blockTimestamp: string,
-    totalBalance: string,
-    tvl: string,
-      /* eslint-disable  @typescript-eslint/no-explicit-any*/
-    marketBalances: any[],
-      /* eslint-disable  @typescript-eslint/no-explicit-any*/
-    dexPositionBalances: any[],
-    apr: string,
-    apy: string,
-    apr1d: string,
-    rewardsApr: string,
-    rewardsApy: string,
-    assetsToSharesRatio: string
+  blockNumber: number;
+  blockTimestamp: string;
+  totalBalance: string;
+  tvl: string;
+  /* eslint-disable  @typescript-eslint/no-explicit-any*/
+  marketBalances: any[];
+  /* eslint-disable  @typescript-eslint/no-explicit-any*/
+  dexPositionBalances: any[];
+  apr: string;
+  apy: string;
+  apr1d: string;
+  rewardsApr: string;
+  rewardsApy: string;
+  assetsToSharesRatio: string;
 };
 
 function splitByTimeframes(items: IporDataApi[]) {
@@ -58,50 +58,54 @@ function splitByTimeframes(items: IporDataApi[]) {
   return { last24h, last7days, last30days };
 }
 
-export default async function getDataFromIPOR(address: string, chainId: number): Promise<IporData | null> {
-  try{
-  const res = await fetch(`https://api.ipor.io/fusion/vaults-history/${chainId}/${address}`, {
-    method: 'GET',
-    headers: {
-      'content-type': 'application/json',
-    },
-  });
+export default async function getDataFromIPOR(
+  address: string,
+  chainId: number
+): Promise<IporData | null> {
+  try {
+    const res = await fetch(`https://api.ipor.io/fusion/vaults-history/${chainId}/${address}`, {
+      method: 'GET',
+      headers: {
+        'content-type': 'application/json',
+      },
+    });
 
-  if (!res.ok) {
-    throw new Error(`IPOR API error: ${res.status} ${res.statusText}`);
-  }
+    if (!res.ok) {
+      throw new Error(`IPOR API error: ${res.status} ${res.statusText}`);
+    }
 
-  const json = await res.json();
+    const json = await res.json();
 
-  if (json.errors?.length) {
-    throw new Error(json.errors[0].message || 'Unknown IPOR error');
-  }
+    if (json.errors?.length) {
+      throw new Error(json.errors[0].message || 'Unknown IPOR error');
+    }
 
-  if(json?.history?.length > 0){
-    const iporHisotry: IporDataApi[] = json.history;
-    const { last24h, last7days, last30days } = splitByTimeframes(iporHisotry);
-    const spotApy = last24h.reduce(
-        (acc: number, history: IporDataApi) => acc + (Number(history.apy) || 0),
-        0
-    ) / last24h.length || 1;
-    const weeklyApy = last7days.reduce(
-        (acc: number, history: IporDataApi) => acc + (Number(history.apy) || 0),
-        0
-    ) / last7days.length || 1;
-    const monthlyApy = last30days.reduce(
-        (acc: number, history: IporDataApi) => acc + (Number(history.apy) || 0),
-        0
-    ) / last30days.length || 1;
-    const newestVaultStatus = iporHisotry.slice(-1)[0];
-    const tvl = Number(newestVaultStatus.tvl);
-    return {
+    if (json?.history?.length > 0) {
+      const iporHisotry: IporDataApi[] = json.history;
+      const { last24h, last7days, last30days } = splitByTimeframes(iporHisotry);
+      const spotApy =
+        last24h.reduce((acc: number, history: IporDataApi) => acc + (Number(history.apy) || 0), 0) /
+          last24h.length || 1;
+      const weeklyApy =
+        last7days.reduce(
+          (acc: number, history: IporDataApi) => acc + (Number(history.apy) || 0),
+          0
+        ) / last7days.length || 1;
+      const monthlyApy =
+        last30days.reduce(
+          (acc: number, history: IporDataApi) => acc + (Number(history.apy) || 0),
+          0
+        ) / last30days.length || 1;
+      const newestVaultStatus = iporHisotry.slice(-1)[0];
+      const tvl = Number(newestVaultStatus.tvl);
+      return {
         spotApy: spotApy,
         weeklyApy: weeklyApy,
         monthlyApy: monthlyApy,
-        tvl
+        tvl,
+      };
     }
-  }
-  } catch(e){
+  } catch (e) {
     console.log(e);
     return null;
   }
