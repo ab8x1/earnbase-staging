@@ -25,16 +25,13 @@ type apyDataType = {
 
 type apyInfoType = {
   spotApy: number;
-  spotApyAlternative?: number;
   weeklyApy: number;
-  weeklyApyAlternative?: number;
   monthlyApy: number;
-  monthlyApyAlternative?: number;
-  lifeTimeApy: number;
   operatingSince: number;
 };
 
 export type poolInfoDataType = {
+  sheetId: string;
   poolId: string;
   network: string;
   vault: string;
@@ -42,7 +39,6 @@ export type poolInfoDataType = {
   productName: string;
   productLink: string;
   tvl: number;
-  tvlAlternative?: number;
   sponsored?: boolean;
 } & apyInfoType;
 
@@ -106,7 +102,6 @@ export async function getPoolApyData(poolInfo: poolInfoType) {
     for (const platformData of poolInfo) {
       const {
         poolId,
-        readApyBase,
         vault,
         platform,
         productLink,
@@ -115,44 +110,21 @@ export async function getPoolApyData(poolInfo: poolInfoType) {
         sponsored,
         tokenAddress,
       } = platformData;
-      const rawApyData = await fetch(`https://yields.llama.fi/chart/${poolId}`);
-      const rawApyDataJson = await rawApyData.json();
-      const apyData: apyDataType = rawApyDataJson?.data || [];
-      const newestData = apyData.slice(-1)[0];
-      const spotApy = Number((readApyBase ? newestData?.apyBase : newestData?.apy) || 0);
-      const weeklyApy =
-        (apyData.slice(-7).reduce((acc, { apy, apyBase }) => {
-          const apyNumber = Number(readApyBase ? apyBase : apy) || 0;
-          return acc + apyNumber;
-        }, 0) || 0) / 7;
-      const monthlyApy =
-        (apyData.slice(-30).reduce((acc, { apy, apyBase }) => {
-          const apyNumber = Number(readApyBase ? apyBase : apy) || 0;
-          return acc + apyNumber;
-        }, 0) || 0) / 30;
-      const lifeTimeApy =
-        (apyData.reduce((acc, { apy, apyBase }) => {
-          const apyNumber = Number(readApyBase ? apyBase : apy) || 0;
-          return acc + apyNumber;
-        }, 0) || 0) /
-        (apyData.length - 1);
-      const oldestData = apyData[0];
-      const operatingSince = new Date(oldestData?.timestamp?.slice(0, 10))?.getTime() || 0;
-      const tvl = newestData.tvlUsd || 0;
-      let spotApyAlternative: number | undefined;
-      let weeklyApyAlternative: number | undefined;
-      let monthlyApyAlternative: number | undefined;
-      let tvlAlternative: number | undefined;
+      let spotApy: number = 0;
+      let weeklyApy: number = 0;
+      let monthlyApy: number = 0;
+      let tvl: number = 0;
       if (tokenAddress) {
         const dataFromApi = await getDataFromApi(platform, tokenAddress, network, vault);
         if (dataFromApi) {
-          spotApyAlternative = dataFromApi.spotApy;
-          weeklyApyAlternative = dataFromApi.weeklyApy;
-          monthlyApyAlternative = dataFromApi.monthlyApy;
-          tvlAlternative = dataFromApi.tvl;
+          spotApy = dataFromApi.spotApy || 0;
+          weeklyApy = dataFromApi.weeklyApy || 0;
+          monthlyApy = dataFromApi.monthlyApy || 0;
+          tvl = dataFromApi.tvl || 0;
         }
       }
       poolApyInfo.push({
+        sheetId: `${vault}-${network}-${platform}-${productName}`.trim().replace(/\s+/g, '-'),
         poolId,
         network,
         vault,
@@ -160,15 +132,10 @@ export async function getPoolApyData(poolInfo: poolInfoType) {
         productName,
         productLink,
         spotApy,
-        spotApyAlternative,
         weeklyApy,
-        weeklyApyAlternative,
         monthlyApy,
-        monthlyApyAlternative,
-        lifeTimeApy,
-        operatingSince,
+        operatingSince: 0,
         tvl,
-        tvlAlternative,
         sponsored,
       });
     }

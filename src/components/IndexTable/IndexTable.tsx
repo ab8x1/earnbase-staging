@@ -20,7 +20,7 @@ import {
 import { availableChains } from '@/consts/constants';
 import SelectContainer from './Select/SelectContainer';
 
-type SortableKey = 'spotApy' | 'tvl' | 'monthlyApy' | 'lifeTimeApy' | 'operatingSince';
+type SortableKey = 'spotApy' | 'tvl' | 'monthlyApy' | 'operatingSince';
 
 export type sortType = {
   key: SortableKey;
@@ -305,11 +305,8 @@ export default function VaultTable({
                     platform,
                     productLink,
                     spotApy,
-                    spotApyAlternative,
                     tvl,
-                    tvlAlternative,
                     monthlyApy,
-                    monthlyApyAlternative,
                     operatingSince,
                     productName,
                     network,
@@ -346,34 +343,22 @@ export default function VaultTable({
                         className={styles.tableData}
                         style={{ color: '#00A63E', fontWeight: 600 }}
                       >
-                        {spotApy.toFixed(2)}% _
-                        <span style={{ color: 'orange' }}>{spotApyAlternative?.toFixed(2)}%</span>
+                        {spotApy.toFixed(2)}%
                       </div>
                     </td>
                     <td>
                       <div className={styles.tableData}>
-                        {monthlyApy.toFixed(2)}% _
-                        <span style={{ color: 'orange' }}>
-                          {monthlyApyAlternative?.toFixed(2)}%
-                        </span>
-                      </div>
-                    </td>
-                    {/* <td>
-                        <div className={styles.tableData}>
-                            {lifeTimeApy.toFixed(2)}%
-                        </div>
-                    </td> */}
-                    <td>
-                      <div className={styles.tableData}>
-                        ${formatMillions(tvl, 2)}_
-                        <span style={{ color: 'orange' }}>
-                          {tvlAlternative ? formatMillions(tvlAlternative, 2) : '?M'}
-                        </span>
+                        {monthlyApy.toFixed(2)}%
                       </div>
                     </td>
                     <td>
                       <div className={styles.tableData}>
-                        {daysBetweenTimestamps(operatingSince)} d
+                        ${formatMillions(tvl, 2)}
+                      </div>
+                    </td>
+                    <td>
+                      <div className={styles.tableData}>
+                        {/* {daysBetweenTimestamps(operatingSince)} d */}
                       </div>
                     </td>
                     <td>
