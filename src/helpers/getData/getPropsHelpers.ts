@@ -13,15 +13,15 @@ export type poolInfoType = {
   tokenAddress?: string;
 }[];
 
-type apyDataType = {
-  timestamp: string;
-  tvlUsd: number | null;
-  apy: number | null;
-  apyBase: number | null;
-  apyReward: number | null;
-  il7d: number | null;
-  apyBase7d: number | null;
-}[];
+// type apyDataType = {
+//   timestamp: string;
+//   tvlUsd: number | null;
+//   apy: number | null;
+//   apyBase: number | null;
+//   apyReward: number | null;
+//   il7d: number | null;
+//   apyBase7d: number | null;
+// }[];
 
 type apyInfoType = {
   spotApy: number;

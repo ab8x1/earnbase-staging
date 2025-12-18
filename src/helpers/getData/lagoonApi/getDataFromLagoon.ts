@@ -39,6 +39,7 @@ const calculateSharePrice = (assets: string, supply: string): number => {
     const priceScaled = (assetsBI * MATH_PRECISION) / supplyBI;
     return Number(priceScaled) / Number(MATH_PRECISION);
   } catch (e) {
+    console.log(e);
     return 0;
   }
 };

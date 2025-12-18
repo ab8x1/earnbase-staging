@@ -5,7 +5,7 @@ import styles from './indexTable.module.css';
 import Image from 'next/image';
 import { poolsInfoType } from '@/helpers/getData/getPropsHelpers';
 import { formatMillions, formatMillionsToNumber } from '@/helpers/formatNumber';
-import daysBetweenTimestamps from '@/helpers/daysBetween';
+// import daysBetweenTimestamps from '@/helpers/daysBetween';
 import SortArrow from './SortArrow';
 import useOnClickOutside from '@/hooks/OnClickOutside';
 import { ChevronUp } from 'lucide-react';
@@ -307,7 +307,7 @@ export default function VaultTable({
                     spotApy,
                     tvl,
                     monthlyApy,
-                    operatingSince,
+                    // operatingSince,
                     productName,
                     network,
                   },
